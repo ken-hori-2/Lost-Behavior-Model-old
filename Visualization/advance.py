@@ -57,12 +57,21 @@ class Algorithm_advance():
         self.M = 1 # 0
         # self.nnn=1
         # self.mmm=1
+        self.End_of_O = False
         "============================================== Robosin ver. との違い =============================================="
 
     " Add model "
     def hierarchical_model_O(self, ΔS): # 良い状態では小さいずれは気にしない(でもそもそも距離のずれは気にする必要ないかも)
+
+        "hierarchical_model_Xから移動"
+        if self.End_of_O: # 直前までに○の連続が途切れていた場合は一旦リセット
+            self.n=1      # resetで0ではなく、1 -> 1/(1+1)=0.5となる
+            self.nnn=1    # resetで0ではなく、1 -> 1/(1+1)=0.5となる
+
         self.n += 1
         self.nnn+=1
+        
+        "×の連続数は良い状態には用いないので、ここでリセットしても関係ないから大丈夫"
         self.M=1      # resetで0ではなく、1 -> 1/(1+1)=0.5となる
         self.mmm=1    # resetで0ではなく、1 -> 1/(1+1)=0.5となる
         Wn = np.array([1, -0.1])
@@ -87,6 +96,9 @@ class Algorithm_advance():
         return ΔS
 
     def hierarchical_model_X(self): # 良い状態ではない時に「戻るタイミングは半信半疑」とした時のストレス値の蓄積の仕方
+
+        self.End_of_O = True # ○の連続が途切れたのでTrue
+
         self.M += 1
         self.mmm+=1
         print("===== 🌟🌟🌟🌟🌟 =====")
@@ -96,8 +108,11 @@ class Algorithm_advance():
         "----- parameter -----" # Add self.Σ
         self.Σ = 1 # 1.1 # 0.1
         self.n2 = copy.copy(self.n)
-        self.n=1 # resetで0ではなく、1 -> 1/(1+1)=0.5となる
-        self.nnn=1    # resetで0ではなく、1 -> 1/(1+1)=0.5となる
+        
+        "ここでリセットは間違い -> ○の連続数nは ×の後に ○を見つけたらリセット  -----> hierarchical_model_Oに移動"
+        # self.n=1 # resetで0ではなく、1 -> 1/(1+1)=0.5となる
+        # self.nnn=1    # resetで0ではなく、1 -> 1/(1+1)=0.5となる
+
         "----- parameter -----"
         print("Save's Σ : ", self.Σ)
         print("[M, n2] : ", self.M, self.n2)
@@ -125,10 +140,10 @@ class Algorithm_advance():
         self.state = state
         self.TRIGAR = TRIGAR
 
-        # TEST
+        
         self.grid = grid
 
-        # add 0924
+        
         self.total_stress = total_stress # 今はストレス値は共有していないのでいらない
         print("TOTAl : {}".format(self.total_stress))
         self.OBS = OBS
@@ -236,7 +251,7 @@ class Algorithm_advance():
                         "-- これがいずれのΔSnodeの式 今はArc に対するΔSのみ --"
                         # arc_s = round(abs(1.0-standard[0]), 3)
                         "====================================== 追加部分 =========================================="
-                        ΔS = 0.3 # 0.1, 0.2, 0.3 # ここ arc_s
+                        ΔS = 0.3 # ここ arc_s
                         self.save_s_all.append(ΔS)
                         "----- 追加部分 -----"
                         ΔS = self.hierarchical_model_O(ΔS)
@@ -251,7 +266,6 @@ class Algorithm_advance():
                         print("Save ΔS-Neuron : ", self.save_s)
                         print("Save's Σ : ", round(sum(self.save_s), 2))
                         self.Σ = round(sum(self.save_s), 2)
-
                         print("Save ΔS : ", self.save_s_all)
                         print("Save's All Σ : ", round(sum(self.save_s_all), 2))
                         print("==========================================")
