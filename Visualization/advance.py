@@ -53,8 +53,8 @@ class Algorithm_advance():
         self.XnWn_list = []
         self.save_s = []
         self.save_s_all = []
-        self.n = 1 # 0
-        self.M = 1 # 0
+        # self.n = 1 # 0
+        # self.M = 1 # 0
         # self.nnn=1
         # self.mmm=1
         self.End_of_O = False
@@ -187,8 +187,8 @@ class Algorithm_advance():
         arc_s = 0
         ΔS = 0
         "----- 追加部分 -----"
-        # self.n = 1
-        # self.M = 1
+        self.n = 1
+        self.M = 1
         self.nnn=1
         self.mmm=1
         "----- 追加部分 -----"
