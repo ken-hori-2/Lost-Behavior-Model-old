@@ -107,11 +107,6 @@ class Algorithm_advance():
         "----- parameter -----" # Add self.Σ
         self.Σ = 1 # 1.1 # 0.1
         self.n2 = copy.copy(self.n)
-        
-        "ここでリセットは間違い -> ○の連続数nは ×の後に ○を見つけたらリセット  -----> hierarchical_model_Oに移動"
-        # self.n=1 # resetで0ではなく、1 -> 1/(1+1)=0.5となる
-        # self.nnn=1    # resetで0ではなく、1 -> 1/(1+1)=0.5となる
-
         "----- parameter -----"
         print("Save's Σ : ", self.Σ)
         print("[M, n2] : ", self.M, self.n2)
@@ -133,10 +128,10 @@ class Algorithm_advance():
         
         
         
-        # "基準距離を可視化に反映させないver.はコメントアウト"
-        self.total_stress -= self.test_s # ×分は蓄積したので、基準距離分は一旦リセット
-        # "基準距離を可視化に反映させないver.はコメントアウト"
-        
+        "基準距離を可視化に反映させないver.はコメントアウト"
+        # self.total_stress -= self.test_s # ×分は蓄積したので、基準距離分は一旦リセット
+        "基準距離を可視化に反映させないver.はコメントアウト"
+
         print("[-基準距離] total : ", round(self.total_stress, 3))
         self.test_s = 0
         print("===== 🌟🌟🌟🌟🌟 =====")
@@ -225,12 +220,8 @@ class Algorithm_advance():
             if self.map_unexp_area or self.FIRST:
                     self.FIRST = False
                     print("un explore area ! 🤖 ❓❓")
-                # if not self.TRIGAR:
-                    # if self.total_stress + self.stress >= 0:
-                        # self.total_stress += self.stress
+                
                     if self.test_s + self.stress >= 0:
-                        # if self.NODELIST[self.state.row][self.state.column] in pre:
-                        #     index = Node.index(self.NODELIST[self.state.row][self.state.column])
 
                         "============================================== Robosin ver. との違い =============================================="
                         "----- 追加部分 -----"
@@ -238,32 +229,29 @@ class Algorithm_advance():
                         ex = -2*ex+2
                         "----- 追加部分 -----"
                         try:
-                            # self.total_stress += round(self.stress/float(Arc[index-1]), 3) # 2)
-                            self.test_s += round(self.stress/float(Arc[index-1]), 3)               *ex # 1205 Add *ex
+                            self.test_s += round(self.stress/float(Arc[index-1]), 3)               *ex
                             "基準距離を可視化に反映させないver.はコメントアウト"
-                            self.total_stress += round(self.stress/float(Arc[index-1]), 3)         *ex # 1205 Add *ex
+                            # self.total_stress += round(self.stress/float(Arc[index-1]), 3)         *ex
                             "基準距離を可視化に反映させないver.はコメントアウト"
                         except:
                             self.test_s += 0
                             "基準距離を可視化に反映させないver.はコメントアウト"
-                            self.total_stress += 0
+                            # self.total_stress += 0
                             "基準距離を可視化に反映させないver.はコメントアウト"
                         print(" TEST 1029 : {}".format(Arc[index-1]))
                         "============================================== Robosin ver. との違い =============================================="
                     if self.NODELIST[self.state.row][self.state.column] in pre:
                         print("🪧 NODE : ⭕️")
                         
-                        # print(f"Total Stress:{self.total_stress}")
                         print(f"Arc Stress:{self.test_s}")
                         index = Node.index(self.NODELIST[self.state.row][self.state.column])
                         print("<{}> match !".format(self.NODELIST[self.state.row][self.state.column]))
                         print("Pre_Arc (事前のArc) : {}".format(Arc[index]))
                         print("Act_Arc (実際のArc) : {}".format(self.test_s))
-                        # print("実際のArc : {}".format(self.total_stress)) # x))
-                        # self.SAVE_ARC.append(self.total_stress)
+                        
                         self.SAVE_ARC.append(self.test_s)
                         print("⚠️ 実際のアークの配列 : {}".format(self.SAVE_ARC))
-                        # print("実際のアークの配列+現在地からの距離 : {}".format(self.SAVE_ARC_2))
+                        
                         print("Arc[index]:{}".format(float(Arc[index])))
                         print("----\n今の permission : {} 以内に発見\n----".format(PERMISSION[index][0]))
 
@@ -272,19 +260,16 @@ class Algorithm_advance():
                         print("standard【基準距離】 : {}".format(standard[0]))
 
                         "============================================== Robosin ver. との違い =============================================="
-                        # if standard[0] != 0:
-                        "-- これがいずれのΔSnodeの式 今はArc に対するΔSのみ --"
-                        # arc_s = round(abs(1.0-standard[0]), 3)
                         "====================================== 追加部分 =========================================="
-                        ΔS = 0.3 # ここ arc_s
+                        ΔS = 0.3
                         self.save_s_all.append(ΔS)
                         "----- 追加部分 -----"
                         ΔS = self.hierarchical_model_O(ΔS) # 関数
                         "----- 追加部分 -----"
                         arc_s = round(abs(self.total_stress-standard[0]+ΔS), 3)
-                        # arc_s = round(abs(ΔS), 3)
+                        # arc_s = round(abs(self.total_stress+ΔS), 3)
 
-                        
+
                         print("==========================================")
                         print("SUM : ", self.total_stress)
                         print("ΔS Arc : ", standard[0])
@@ -299,19 +284,9 @@ class Algorithm_advance():
 
                         "add 1215"
                         self.n_m[self.state.row][self.state.column] = (self.n, self.M) # 連続数(n, m)の追加
-
+                        
                         "====================================== 追加部分 =========================================="
                         "============================================== Robosin ver. との違い =============================================="
-
-                        
-                        "-- これがいずれのΔSnodeの式 今はArc に対するΔSのみ --"
-                        # arc_s = round(1.0-standard[0], 2)
-                        # if arc_s > 2:
-                        #     arc_s = 1.0
-                        # if arc_s == 0:
-                        #     arc_s = 1.0
-                        # else:
-                            # arc_s = 0.5 # 0.0
                         print("ΔS_Arc arc stress【基準ストレス】 : {}".format(arc_s))  #このままだとArcが大きくなるとストレス値も大きくなってしまい、ストレス値の重みが変わってしまうので、基準[1]にする 
                     
 
@@ -322,16 +297,10 @@ class Algorithm_advance():
                             self.STATE_HISTORY.append(self.state)
                             self.TOTAL_STRESS_LIST.append(self.total_stress)
                             break
-                        
-                        ################################################
-                        # 本当はここで見つけた時に、現場情報のリストに格納していく
-                        # self.Observation[self.state.row][self.state.column] = round(0.1 * random.randint(1, 10), 2) # 🔑今は観測されている前提の簡単なやつ
+
+
                         "----------------------------------------------------------------------------------------------------------"
                         "Nodeに対するストレスの保存"
-                        # self.Observation[self.state.row][self.state.column] = self.Observation[self.state.row][self.state.column]
-                        
-                        "== 基準距離でノードに対するストレス + 一致度の大きさで戻るノードを決める場合 =="
-                        # self.Observation[self.state.row][self.state.column] = round(abs(1.0 - arc_s), 3)
                         "== 基準距離でノードに対するストレス + stressの小ささで戻るノードを決める場合 =="
                         self.Observation[self.state.row][self.state.column] = round(abs(arc_s), 3)
                         "全部コメントアウトの時はsettingのobservationの数値をそのまま使う"
@@ -343,10 +312,7 @@ class Algorithm_advance():
                             self.OBS = self.OBS.tolist()
                             self.OBS.append(self.Observation[self.state.row][self.state.column])
                         print("OBS : {}".format(self.OBS))
-                        # 本当はここで見つけた時に、現場情報のリストに格納していく
-                        ################################################
-
-                        # if not self.NODELIST[self.state.row][self.state.column] == "s":
+                        
                         self.Add_Advance = True
                         self.BPLIST.append(self.state)
 
@@ -420,29 +386,22 @@ class Algorithm_advance():
 
 
                         "============================================== Robosin ver. との違い =============================================="
-                        # self.total_stress += self.test_s
                         self.test_s = 0
                         "-- Total Stress を発見した(1-Nodeに対するストレス)分だけ減少させる --"
-                        # self.sigma += self.total_stress
-                        # self.sigma = self.total_stress
-                        # self.total_stress = 0
                         print("total stress : {}".format(self.total_stress))
-                        
-                        # self.total_stress -= (1-arc_s)
                         "----- 変更部分 -----"
                         
                         "基準距離を可視化に反映させないver.はコメントアウト"
-                        self.total_stress = 0
-                        self.total_stress += arc_s
+                        # self.total_stress = 0
+                        # self.total_stress += arc_s
                         "基準距離を可視化に反映させないver.はコメントアウト +代わりに以下"
-                        # self.total_stress += ΔS # 基準距離を可視化させないver.
+                        self.total_stress += ΔS # 基準距離を可視化させないver.
+
                         "----- 変更部分 -----"
                         "============================================== Robosin ver. との違い =============================================="
 
                         self.SIGMA_LIST.append(self.total_stress)
                         print("SIGMA : {}".format(self.SIGMA_LIST))
-                        # self.total_stress = self.sigma
-                        # self.TOTAL_STRESS_LIST.append(self.total_stress)
                         print("Total Stress (減少後) : {}".format(self.total_stress))
                         "--------------------------------------------------------------"
                     else:
@@ -491,14 +450,10 @@ class Algorithm_advance():
             else:
                 print("================\n🤖 何も処理しませんでした__2\n================")
                 print("マーキング = 1 の探索済みエリア")
-                # self.TRIGAR = True
-                # break
                 
             print(f"🤖 State:{self.state}")
             self.STATE_HISTORY.append(self.state)
             self.TOTAL_STRESS_LIST.append(self.total_stress)
-            # self.TOTAL_STRESS_LIST.append(abs(1.0-self.total_stress))
-            # self.TOTAL_STRESS_LIST.append(arc_s)
             print(f"Total Stress:{self.total_stress}")
 
             "基準距離の可視化"
@@ -509,6 +464,18 @@ class Algorithm_advance():
             
             print(f"standard_list = {self.standard_list}")
             print(f"rate_list = {self.rate_list}")
+            
+            "コメントアウト"
+            # # __n_m__ 出力テスト
+            # print("__n_m__ : ")
+            # pprint.pprint(self.n_m)
+            # __a = self.n_m[18][8] # [15][8]  -> ここは戻る場所決定で決めた場所[self.state.row][self.state.column]を代入
+            # print(__a)
+            # try:
+            #     print(__a[0])
+            # except:
+            #     pass
+            # # __n_m__ 出力テスト
 
             "============================================== Robosin ver. との違い =============================================="
             self.Node_s.append(0)
@@ -537,7 +504,6 @@ class Algorithm_advance():
             if self.TRIGAR:
                 self.env.mark(self.state, self.TRIGAR)
                 print("終了します")
-                # self.TRIGAR = False
                 self.BPLIST.append(self.state) # Arcを計算する為に、最初だけ必要
                 self.Add_Advance = True
                 break
@@ -555,5 +521,13 @@ class Algorithm_advance():
         print("🍏 ⚠️ 🍐 Action : {}".format(self.action))
         print("TRIGAR : {}".format(self.TRIGAR))
         print("CrossRoad : {}\n\n\n".format(self.CrossRoad))
+
+
+        "コメントアウト"
+        # # __n_m__ 出力テスト
+        # self.n = __a[0] # nを代入
+        # self.M = __a[1] # mを代入
+        # print(f"[n, m] = {self.n, self.M}")
+        # # __n_m__ 出力テスト
 
         return self.total_stress, self.STATE_HISTORY, self.state, self.TRIGAR, self.OBS, self.BPLIST, self.action, self.Add_Advance, GOAL, self.SAVE_ARC, self.CrossRoad, self.Storage, self.Storage_Stress, self.TOTAL_STRESS_LIST, self.Node_s, self.Node_A, self.Node_B, self.Node_C, self.Node_D, self.Node_g, self.Cost_S, self.Cost_O, self.Cost_A, self.Cost_B, self.Cost_C, self.Cost_D, self.WEIGHT_CROSS_S, self.WEIGHT_CROSS_O, self.WEIGHT_CROSS_A, self.WEIGHT_CROSS_B, self.WEIGHT_CROSS_C, self.WEIGHT_CROSS_D # , permission
